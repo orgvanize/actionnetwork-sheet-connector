@@ -1,0 +1,17 @@
+{
+  "name": "actionnetwork-sheet-connector",
+  "version": "1.0.0",
+  "description": "Connector between ActionNetwork and Google Sheets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vanguard Campaign Corps.",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "dotenv": "^8.2.0",
+    "googleapis": "^60.0.1",
+    "luxon": "^1.25.0"
+  }
+}

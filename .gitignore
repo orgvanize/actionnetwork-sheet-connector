@@ -1,0 +1,4 @@
+node_modules/
+.env
+google_refresh_token
+google_sa_credentials.json
