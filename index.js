@@ -119,7 +119,7 @@ const syncRSVPs = async () => {
 
                 if(needsUpdate) {
                     //console.log('needs update', row, currentRow, foundPersonIdx + 1);
-
+                    
                     await GoogleApi.updateRowsInSheet(
                         spreadsheetId,
                         eventBundle.event.name,
@@ -127,6 +127,7 @@ const syncRSVPs = async () => {
                         'A',
                         foundPersonIdx + 1,
                     );
+                    
                     //console.log('update res', res.data.responses);
                 }
             }
@@ -137,11 +138,22 @@ const syncRSVPs = async () => {
         }
 
         if(sheetRowsToAppend.length > 0) {
+            const lastRow = !sheet.data || !sheet.data[0] || !sheet.data[0].rowData ? 1
+                : sheet.data[0].rowData.length;
+            await GoogleApi.updateRowsInSheet(
+                spreadsheetId,
+                eventBundle.event.name,
+                sheetRowsToAppend,
+                'A',
+                lastRow + 1,
+            );
+            /*
             await GoogleApi.appendRowsToSheet(
                 spreadsheetId,
                 eventBundle.event.name,
                 sheetRowsToAppend
             );
+            */
         }
     }
 }
