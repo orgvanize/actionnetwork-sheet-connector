@@ -84,6 +84,8 @@ const syncRSVPs = async () => {
     for(const eventBundle of eventsWithAttendances) {
         const sheet = sheetsByName[eventBundle.event.name];
 
+        let sheetRowsToAppend = [];
+
         for(const attBundle of eventBundle.attendances) {
             const attendance = attBundle.attendance;
             const personId = attendance['action_network:person_id'];
@@ -98,9 +100,10 @@ const syncRSVPs = async () => {
                 attendance.status,
             ];
 
-            const foundPersonIdx = sheet.data[0].rowData.findIndex(data => {
-                return data.values[0].formattedValue == personId;
-            });
+            const foundPersonIdx = !sheet.data || !sheet.data[0] || !sheet.data[0].rowData ? -1
+                : sheet.data[0].rowData.findIndex(data => {
+                    return data.values[0].formattedValue == personId;
+                });
 
             if(foundPersonIdx > -1) {
                 const foundPerson = sheet.data[0].rowData[foundPersonIdx];
@@ -115,7 +118,7 @@ const syncRSVPs = async () => {
                 //console.log('checking updating', row, currentRow, needsUpdate);
 
                 if(needsUpdate) {
-                    console.log('needs update', row, currentRow, foundPersonIdx + 1);
+                    //console.log('needs update', row, currentRow, foundPersonIdx + 1);
 
                     await GoogleApi.updateRowsInSheet(
                         spreadsheetId,
@@ -128,13 +131,17 @@ const syncRSVPs = async () => {
                 }
             }
             else {
-                console.log('appending', row);
-                await GoogleApi.appendRowToSheet(
-                    spreadsheetId,
-                    eventBundle.event.name,
-                    row
-                );
+                //console.log('appending', row);
+                sheetRowsToAppend.push(row);
             }
+        }
+
+        if(sheetRowsToAppend.length > 0) {
+            await GoogleApi.appendRowsToSheet(
+                spreadsheetId,
+                eventBundle.event.name,
+                sheetRowsToAppend
+            );
         }
     }
 }
